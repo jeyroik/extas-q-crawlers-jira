@@ -24,9 +24,9 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
      */
     public function __construct(array $config = [])
     {
-        parent::__construct($config);
-
         $this->initUri();
+
+        parent::__construct($config);
     }
 
     /**
@@ -157,6 +157,11 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
             }
 
             $this->config[static::URI] = $jiraEndpoint . '/rest/api/latest/search?' . 'jql=';
+        } else {
+            throw new \Exception(
+                'Missed jira endpoint.' . '\n' .
+                'Please, define <info>EXTAS__Q_JIRA_ENDPOINT</info> env parameter.'
+            );
         }
 
         return $this;

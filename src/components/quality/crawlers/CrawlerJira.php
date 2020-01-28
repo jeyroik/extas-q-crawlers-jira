@@ -2,6 +2,7 @@
 namespace extas\components\quality\crawlers;
 
 use extas\components\quality\crawlers\jira\JiraClient;
+use extas\components\quality\users\User;
 use extas\components\SystemContainer;
 use extas\interfaces\quality\crawlers\ICrawler;
 use extas\interfaces\quality\crawlers\jira\IJiraIssue;
@@ -48,14 +49,39 @@ class CrawlerJira extends Crawler
          */
         $userRepo = SystemContainer::getItem(IUserRepository::class);
         $users = $userRepo->all([IUser::FIELD__NAME => array_keys($assignees)]);
+        $usersByNames = [];
         foreach ($users as $user) {
-            $user->setIssuesBVSum($assignees[$user->getName()]['sum'])
-                ->setIssuesDoneSum($assignees[$user->getName()]['done'])
-                ->setTimeSpentSum($assignees[$user->getName()]['time_spent'])
-                ->setBugsSum($assignees[$user->getName()]['bugs']);
+            $usersByNames[$user->getName()] = true;
+            $user = $this->applyNewData($user, $assignees);
             $userRepo->update($user);
         }
+        
+        foreach ($assignees as $userName => $userData) {
+            if (isset($usersByNames[$userName])) {
+                continue;
+            }
+
+            $user = new User([User::FIELD__NAME => $userName]);
+            $user = $this->applyNewData($user, $assignees);
+            $userRepo->create($user);
+        }
         return $this;
+    }
+
+    /**
+     * @param IUser $user
+     * @param array $assignees
+     *
+     * @return IUser
+     */
+    protected function applyNewData(IUser $user, array $assignees)
+    {
+        $user->setIssuesBVSum($assignees[$user->getName()]['sum'])
+            ->setIssuesDoneSum($assignees[$user->getName()]['done'])
+            ->setTimeSpentSum($assignees[$user->getName()]['time_spent'])
+            ->setBugsSum($assignees[$user->getName()]['bugs']);
+
+        return $user;
     }
 
     /**
