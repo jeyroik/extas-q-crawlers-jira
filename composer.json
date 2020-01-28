@@ -1,0 +1,14 @@
+{
+  "name": "jeyroik/extas-q-crawlers-jira",
+  "description": "Jira quality crawler package",
+  "require": {
+    "jeyroik/extas-installer": "*",
+    "jeyroik/extas-q-users": "*",
+    "jeyroik/extas-q-crawlers": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "extas\\": "src/"
+    }
+  }
+}
