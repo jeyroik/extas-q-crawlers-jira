@@ -76,10 +76,13 @@ class CrawlerJira extends Crawler
      */
     protected function applyNewData(IUser $user, array $assignees)
     {
-        $user->setIssuesBVSum($assignees[$user->getName()]['sum'])
-            ->setIssuesDoneSum($assignees[$user->getName()]['done'])
-            ->setTimeSpentSum($assignees[$user->getName()]['time_spent'])
-            ->setBugsSum($assignees[$user->getName()]['bugs']);
+        $userData = $assignees[$user->getName()];
+
+        $user->setIssuesBVSum($userData['sum'])
+            ->setIssuesDoneSum($userData['done'])
+            ->setTimeSpentSum($userData['time_spent'])
+            ->setBugsSum($userData['bugs'])
+            ->setIssuesReturnsCount($userData['returns']);
 
         return $user;
     }
