@@ -15,6 +15,7 @@ use extas\interfaces\quality\crawlers\jira\IJiraIssueType;
 class JiraIssue extends Item implements IJiraIssue
 {
     use TJiraBV;
+    use TJiraReturns;
 
     /**
      * @return string
@@ -98,6 +99,18 @@ class JiraIssue extends Item implements IJiraIssue
         }
 
         return $spent;
+    }
+
+    /**
+     * @return int
+     * @throws
+     */
+    public function getReturnsCount(): int
+    {
+        $fields = $this->getFields();
+        $returns = $fields['customfield_' . $this->getReturnsId()] ?? 0;
+
+        return (int) $returns;
     }
 
     /**

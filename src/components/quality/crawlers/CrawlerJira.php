@@ -122,6 +122,7 @@ class CrawlerJira extends Crawler
                             'sum' => 0,
                             'time_spent' => 0,
                             'bugs' => 0,
+                            'returns' => 0,
                             'done' => 0,
                             'index' => []
                         ];
@@ -129,6 +130,7 @@ class CrawlerJira extends Crawler
                     if (!isset($assignees[$user]['index'][$issueKey])) {
                         $assignees[$user]['sum'] += $bvs[$issueKey];
                         $assignees[$user]['time_spent'] += $ticket->getTimeSpent($user);
+                        $assignees[$user]['returns'] += $ticket->getReturnsCount();
                         $assignees[$user]['done']++;
                         $assignees[$user]['index'][$issueKey] = true;
 

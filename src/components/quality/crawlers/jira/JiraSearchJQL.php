@@ -13,6 +13,7 @@ use extas\interfaces\quality\crawlers\jira\IJiraSearchJQL;
 class JiraSearchJQL extends Item implements IJiraSearchJQL
 {
     use TJiraBV;
+    use TJiraReturns;
 
     protected $jqlStarted = false;
 
@@ -107,6 +108,7 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
     public function returnFields(array $fields): IJiraSearchJQL
     {
         $fields[] = 'customfield_' . $this->getBVId();
+        $fields[] = 'customfield_' . $this->getReturnsId();
         $this->appendToUri('&' . static::PARAM__FIELDS . '=' . implode(',', $fields));
 
         return $this;

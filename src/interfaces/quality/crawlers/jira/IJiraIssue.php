@@ -63,6 +63,11 @@ interface IJiraIssue extends IItem
     public function getTimeSpent(string $username);
 
     /**
+     * @return int
+     */
+    public function getReturnsCount(): int;
+
+    /**
      * @return bool
      */
     public function isBug(): bool;
