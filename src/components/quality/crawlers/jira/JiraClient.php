@@ -51,7 +51,7 @@ class JiraClient extends Item implements IJiraClient
             ]
         ]);
 
-        $data = json_decode($response->getBody());
+        $data = json_decode($response->getBody(), true);
         $search = new JiraSearch($data);
         $items = $search->hasItems() ? $search->getItems() : [];
 
@@ -70,10 +70,7 @@ class JiraClient extends Item implements IJiraClient
     {
         $jql = new JQL();
         $client = $this->getHttClient();
-        $jql->issueKey([JQL::ISSUE_TYPE__STORY])
-            ->issueLinkType([JQL::LINK_TYPE__PARENT])
-            ->bv(JQL::CONDITION__GREATER, 0)
-            ->updatedDate(JQL::CONDITION__LOWER, JQL::DATE_FUNC__END_OF_MONTH, -1)
+        $jql->issueKey($keys)
             ->returnFields([
                 JQL::PARAM__ISSUE_LINKS,
                 JQL::PARAM__ASSIGNEE,
@@ -87,7 +84,7 @@ class JiraClient extends Item implements IJiraClient
             ]
         ]);
 
-        $data = json_decode($response->getBody());
+        $data = json_decode($response->getBody(), true);
         $search = new JiraSearch($data);
         $items = $search->hasItems() ? $search->getItems() : [];
         foreach ($items as $item) {

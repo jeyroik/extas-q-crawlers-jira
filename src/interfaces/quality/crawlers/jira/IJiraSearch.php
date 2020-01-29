@@ -14,7 +14,7 @@ interface IJiraSearch extends IItem
     const SUBJECT = 'extas.quality.crawler.jira.search';
 
     const FIELD__TOTAL = 'total';
-    const FIELD__ITEMS = 'items';
+    const FIELD__ITEMS = 'issues';
 
     /**
      * @return bool

@@ -55,7 +55,7 @@ class CrawlerJira extends Crawler
             $user = $this->applyNewData($user, $assignees);
             $userRepo->update($user);
         }
-        
+
         foreach ($assignees as $userName => $userData) {
             if (isset($usersByNames[$userName])) {
                 continue;
