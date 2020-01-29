@@ -84,6 +84,10 @@ class CrawlerJira extends Crawler
             ->setBugsSum($userData['bugs'])
             ->setIssuesReturnsCount($userData['returns']);
 
+        foreach ($this->getPluginsByStage('quality.user.data.applied') as $plugin) {
+            $plugin($user);
+        }
+
         return $user;
     }
 
