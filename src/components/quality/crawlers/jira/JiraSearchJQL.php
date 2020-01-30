@@ -109,7 +109,7 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
     {
         $fields[] = 'customfield_' . $this->getBVId();
         $fields[] = 'customfield_' . $this->getReturnsId();
-        $this->appendToUri('&' . static::PARAM__FIELDS . '=' . implode(',', $fields));
+        $this->config[static::URI] .= '&' . static::PARAM__FIELDS . '=' . implode(',', $fields);
 
         return $this;
     }
