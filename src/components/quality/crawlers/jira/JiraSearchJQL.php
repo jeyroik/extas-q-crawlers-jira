@@ -116,10 +116,60 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
 
     /**
      * @return string
+     * @throws
      */
     public function build(): string
     {
-        return $this->config[static::URI];
+        /**
+         * like "/rest/api/latest/" or "/rest/api/2/"
+         */
+        $endpointVersion = getenv('EXTAS__Q_JIRA_ENDPOINT_VERSION') ?: '';
+
+        return $this->getEndpoint() . $endpointVersion . 'search?jql=' . $this->config[static::URI];
+    }
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public function buildJson(): array
+    {
+        $token = getenv('EXTAS__Q_JIRA_WRAPPER_TOKEN') ?: '';
+
+        if (!$token) {
+            throw new \Exception(
+                'Missed jira wrapper token.' . '\n' .
+                'Please, define <info>EXTAS__Q_JIRA_WRAPPER_TOKEN</info> env parameter.'
+            );
+        }
+
+        return [
+            'token' => $token,
+            'version' => '1.0',
+            'action' => 'service:proxy',
+            'data' => [
+                'service' => 'jira',
+                'query' => 'search?jql='.$this->config[static::URI]
+            ]
+        ];
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function getEndpoint(): string
+    {
+        $jiraEndpoint = getenv('EXTAS__Q_JIRA_ENDPOINT') ?: '';
+
+        if (!$jiraEndpoint) {
+            throw new \Exception(
+                'Missed jira endpoint.' . '\n' .
+                'Please, define <info>EXTAS__Q_JIRA_ENDPOINT</info> env parameter.'
+            );
+        }
+
+        return $jiraEndpoint;
     }
 
     /**
@@ -146,30 +196,7 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
      */
     protected function initUri()
     {
-        $jiraEndpoint = getenv('EXTAS__Q_JIRA_ENDPOINT') ?: '';
-
-        if ($jiraEndpoint) {
-            $bvFieldID = getenv('EXTAS__Q_JIRA_BV_FIELD_ID') ?: 0;
-            /**
-             * like "/rest/api/latest/" or "/rest/api/2/"
-             */
-            $endpointVersion = getenv('EXTAS__Q_JIRA_ENDPOINT_VERSION') ?: '';
-
-            if (!$bvFieldID) {
-                throw new \Exception(
-                    'Missed jira bv field id.' . '\n' .
-                    'Please, define <info>EXTAS__Q_JIRA_BV_FIELD_ID</info> env parameter.'
-                );
-            }
-
-            $this->config[static::URI] = $jiraEndpoint . $endpointVersion . 'search?' . 'jql=';
-        } else {
-            throw new \Exception(
-                'Missed jira endpoint.' . '\n' .
-                'Please, define <info>EXTAS__Q_JIRA_ENDPOINT</info> env parameter.'
-            );
-        }
-
+        $this->config[static::URI] = '';
         return $this;
     }
 

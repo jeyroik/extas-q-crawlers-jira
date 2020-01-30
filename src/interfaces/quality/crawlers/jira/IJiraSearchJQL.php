@@ -85,4 +85,15 @@ interface IJiraSearchJQL extends IItem
      * @return string
      */
     public function build(): string;
+
+    /**
+     * @return array
+     */
+    public function buildJson(): array;
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function getEndpoint(): string;
 }

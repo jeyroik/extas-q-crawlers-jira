@@ -86,25 +86,46 @@ class JiraClient extends Item implements IJiraClient
      * @param IJiraSearchJQL $jql
      *
      * @return array
+     * @throws \Exception
      */
     protected function getResponse(IJiraSearchJQL $jql)
     {
-        $client = $this->getHttClient();
-        $response = $client->get($jql->build(), [
-            'auth' => [
-                getenv('EXTAS__Q_JIRA_LOGIN') ?: '',
-                getenv('EXTAS__Q_JIRA_PASSWORD') ?: ''
-            ]
-        ]);
-
-        $data = json_decode($response->getBody(), true);
-
         $isWrapped = getenv('EXTAS__Q_JIRA_WRAPPED') ?: 0;
 
         if ($isWrapped) {
-            $data = $data['data'] ?? [];
-            $data = $data['proxy-response'] ?? [];
+            return $this->getWrappedResponse($jql);
+        } else {
+            $client = $this->getHttClient();
+            $response = $client->get($jql->build(), [
+                'auth' => [
+                    getenv('EXTAS__Q_JIRA_LOGIN') ?: '',
+                    getenv('EXTAS__Q_JIRA_PASSWORD') ?: ''
+                ]
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+            return $data;
         }
+    }
+
+    /**
+     * @param IJiraSearchJQL $jql
+     *
+     * @return array|mixed
+     * @throws \Exception
+     */
+    protected function getWrappedResponse(IJiraSearchJQL $jql)
+    {
+        $client = $this->getHttClient();
+        $response = $client->get(
+            $jql->getEndpoint(),
+            ['json' => $jql->buildJson()]
+        );
+
+        $data = json_decode($response->getBody(), true);
+        $data = $data['data'] ?? [];
+        $data = $data['proxy-response'] ?? [];
 
         return $data;
     }
