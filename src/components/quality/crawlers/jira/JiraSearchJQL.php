@@ -70,7 +70,7 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
      */
     public function issueKey(array $keys): IJiraSearchJQL
     {
-        $this->appendToUri(static::PARAM__ISSUE_KEY . ' in (' . implode(',', $keys) . ')');
+        $this->appendToUri(static::PARAM__ISSUE_KEY . ' in ("' . implode('","', $keys) . '")');
 
         return $this;
     }
@@ -82,7 +82,7 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
      */
     public function issueLinkType(array $types): IJiraSearchJQL
     {
-        $this->appendToUri(static::PARAM__ISSUE_LINK_TYPE . ' in (' . implode(',', $types) . ')');
+        $this->appendToUri(static::PARAM__ISSUE_LINK_TYPE . ' in ("' . implode('","', $types) . '")');
 
         return $this;
     }
@@ -94,7 +94,7 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
      */
     public function issueType(array $types): IJiraSearchJQL
     {
-        $this->appendToUri(static::PARAM__ISSUE_TYPE . ' in (' . implode(',', $types) . ')');
+        $this->appendToUri(static::PARAM__ISSUE_TYPE . ' in ("' . implode('","', $types) . '")');
 
         return $this;
     }

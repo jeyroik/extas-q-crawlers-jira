@@ -40,8 +40,7 @@ class JiraClient extends Item implements IJiraClient
             ->bv(JQL::CONDITION__GREATER, 0)
             ->updatedDate(JQL::CONDITION__LOWER, JQL::DATE_FUNC__END_OF_MONTH, -1)
             ->returnFields([
-                JQL::PARAM__ISSUE_LINKS,
-                JQL::PARAM__ISSUE_BV
+                JQL::PARAM__ISSUE_LINKS
             ]);
         $search = new JiraSearch($this->getResponse($jql));
         $items = $search->hasItems() ? $search->getItems() : [];
