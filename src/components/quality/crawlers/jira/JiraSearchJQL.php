@@ -150,6 +150,10 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
 
         if ($jiraEndpoint) {
             $bvFieldID = getenv('EXTAS__Q_JIRA_BV_FIELD_ID') ?: 0;
+            /**
+             * like "/rest/api/latest/" or "/rest/api/2/"
+             */
+            $endpointVersion = getenv('EXTAS__Q_JIRA_ENDPOINT_VERSION') ?: '';
 
             if (!$bvFieldID) {
                 throw new \Exception(
@@ -158,7 +162,7 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
                 );
             }
 
-            $this->config[static::URI] = $jiraEndpoint . '/rest/api/latest/search?' . 'jql=';
+            $this->config[static::URI] = $jiraEndpoint . $endpointVersion . 'search?' . 'jql=';
         } else {
             throw new \Exception(
                 'Missed jira endpoint.' . '\n' .

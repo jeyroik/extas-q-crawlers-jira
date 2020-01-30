@@ -4,6 +4,7 @@ namespace extas\components\quality\crawlers\jira;
 use extas\components\Item;
 use extas\interfaces\quality\crawlers\jira\IJiraClient;
 use extas\components\quality\crawlers\jira\JiraSearchJQL as JQL;
+use extas\interfaces\quality\crawlers\jira\IJiraSearchJQL;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 
@@ -34,7 +35,6 @@ class JiraClient extends Item implements IJiraClient
     public function allStories()
     {
         $jql = new JQL();
-        $client = $this->getHttClient();
         $jql->issueType([JQL::ISSUE_TYPE__STORY])
             ->issueLinkType([JQL::LINK_TYPE__PARENT])
             ->bv(JQL::CONDITION__GREATER, 0)
@@ -43,16 +43,7 @@ class JiraClient extends Item implements IJiraClient
                 JQL::PARAM__ISSUE_LINKS,
                 JQL::PARAM__ISSUE_BV
             ]);
-
-        $response = $client->get($jql->build(), [
-            'auth' => [
-                getenv('EXTAS__Q_JIRA_LOGIN') ?: '',
-                getenv('EXTAS__Q_JIRA_PASSWORD') ?: ''
-            ]
-        ]);
-
-        $data = json_decode($response->getBody(), true);
-        $search = new JiraSearch($data);
+        $search = new JiraSearch($this->getResponse($jql));
         $items = $search->hasItems() ? $search->getItems() : [];
 
         foreach ($items as $item) {
@@ -69,7 +60,6 @@ class JiraClient extends Item implements IJiraClient
     public function allTickets(array $keys)
     {
         $jql = new JQL();
-        $client = $this->getHttClient();
         $jql->issueKey($keys)
             ->returnFields([
                 JQL::PARAM__ISSUE_LINKS,
@@ -77,15 +67,7 @@ class JiraClient extends Item implements IJiraClient
                 JQL::PARAM__WORK_LOG
             ]);
 
-        $response = $client->get($jql->build(), [
-            'auth' => [
-                getenv('EXTAS__Q_JIRA_LOGIN') ?: '',
-                getenv('EXTAS__Q_JIRA_PASSWORD') ?: ''
-            ]
-        ]);
-
-        $data = json_decode($response->getBody(), true);
-        $search = new JiraSearch($data);
+        $search = new JiraSearch($this->getResponse($jql));
         $items = $search->hasItems() ? $search->getItems() : [];
         foreach ($items as $item) {
             yield $item;
@@ -98,6 +80,33 @@ class JiraClient extends Item implements IJiraClient
     public function getHttClient()
     {
         return $this->config[static::FIELD__HTTP_CLIENT] ?? null;
+    }
+
+    /**
+     * @param IJiraSearchJQL $jql
+     *
+     * @return array
+     */
+    protected function getResponse(IJiraSearchJQL $jql)
+    {
+        $client = $this->getHttClient();
+        $response = $client->get($jql->build(), [
+            'auth' => [
+                getenv('EXTAS__Q_JIRA_LOGIN') ?: '',
+                getenv('EXTAS__Q_JIRA_PASSWORD') ?: ''
+            ]
+        ]);
+
+        $data = json_decode($response->getBody(), true);
+
+        $isWrapped = getenv('EXTAS__Q_JIRA_WRAPPED') ?: 0;
+
+        if ($isWrapped) {
+            $data = $data['data'] ?? [];
+            $data = $data['proxy-response'] ?? [];
+        }
+
+        return $data;
     }
 
     /**
