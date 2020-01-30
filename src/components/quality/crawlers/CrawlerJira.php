@@ -2,11 +2,13 @@
 namespace extas\components\quality\crawlers;
 
 use extas\components\quality\crawlers\jira\JiraClient;
+use extas\components\quality\indexes\Index;
 use extas\components\quality\users\User;
 use extas\components\SystemContainer;
 use extas\interfaces\quality\crawlers\ICrawler;
 use extas\interfaces\quality\crawlers\jira\IJiraIssue;
 use extas\interfaces\quality\crawlers\jira\IJiraIssueLink;
+use extas\interfaces\quality\indexes\IIndexRepository;
 use extas\interfaces\quality\users\IUser;
 use extas\interfaces\quality\users\IUserRepository;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -70,7 +72,7 @@ class CrawlerJira extends Crawler
         $usersByNames = [];
         foreach ($users as $user) {
             $usersByNames[$user->getName()] = true;
-            $user = $this->applyNewData($user, $assignees);
+            $user = $this->applyNewData($user, $assignees, $output);
             $userRepo->update($user);
             $output->writeln(['Update user <info>' . $user->getName() . '</info>']);
         }
@@ -81,7 +83,7 @@ class CrawlerJira extends Crawler
             }
 
             $user = new User([User::FIELD__NAME => $userName]);
-            $user = $this->applyNewData($user, $assignees);
+            $user = $this->applyNewData($user, $assignees, $output);
             $userRepo->create($user);
             $output->writeln(['Create user <info>' . $user->getName() . '</info>']);
         }
@@ -91,10 +93,11 @@ class CrawlerJira extends Crawler
     /**
      * @param IUser $user
      * @param array $assignees
+     * @param OutputInterface $output
      *
      * @return IUser
      */
-    protected function applyNewData(IUser $user, array $assignees)
+    protected function applyNewData(IUser $user, array $assignees, OutputInterface &$output)
     {
         $userData = $assignees[$user->getName()];
 
@@ -105,7 +108,7 @@ class CrawlerJira extends Crawler
             ->setIssuesReturnsCount($userData['returns']);
 
         foreach ($this->getPluginsByStage('quality.user.data.applied') as $plugin) {
-            $plugin($user);
+            $plugin($user, $output);
         }
 
         return $user;

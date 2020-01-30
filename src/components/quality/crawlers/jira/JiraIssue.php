@@ -5,6 +5,7 @@ use extas\components\Item;
 use extas\interfaces\quality\crawlers\jira\IJiraIssue;
 use extas\interfaces\quality\crawlers\jira\IJiraIssueLink;
 use extas\interfaces\quality\crawlers\jira\IJiraIssueType;
+use extas\interfaces\quality\crawlers\jira\IJiraStatus;
 
 /**
  * Class JiraIssue
@@ -131,6 +132,17 @@ class JiraIssue extends Item implements IJiraIssue
         }
 
         return $names;
+    }
+
+    /**
+     * @return IJiraStatus
+     */
+    public function getStatus(): IJiraStatus
+    {
+        $fields = $this->getFields();
+        $statusData = $fields[static::FIELD__STATUS] ?? [];
+
+        return new JiraStatus($statusData);
     }
 
     /**

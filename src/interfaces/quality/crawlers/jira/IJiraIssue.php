@@ -19,6 +19,12 @@ interface IJiraIssue extends IItem
     const FIELD__WORK_LOG = 'worklog';
     const FIELD__ISSUE_TYPE = 'issuetype';
     const FIELD__ISSUE_LINKS = 'issuelinks';
+    const FIELD__STATUS = 'status';
+
+    /**
+     * @return IJiraStatus
+     */
+    public function getStatus(): IJiraStatus;
 
     /**
      * @return string
