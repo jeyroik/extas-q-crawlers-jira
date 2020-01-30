@@ -17,8 +17,10 @@ interface IJiraIssueLink extends IItem
     const FIELD__ISSUE_ID = 'id';
     const FIELD__ISSUE_LINKS_OUTWARD = 'outwardIssue';
 
+    const IS__OUTWARD = 'outwardIssue';
+    const IS__INWARD = 'inwardIssue';
+
     const TYPE__PARENT = 'Parent';
-    const TYPE__CHILD = 'Child';
 
     /**
      * @return bool
@@ -31,7 +33,9 @@ interface IJiraIssueLink extends IItem
     public function isParent(): bool;
 
     /**
+     * @param string $linkDirection
+     *
      * @return string
      */
-    public function getIssueKey(): string;
+    public function getIssueKey(string $linkDirection = self::IS__OUTWARD): string;
 }

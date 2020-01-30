@@ -148,8 +148,10 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
             'version' => '1.0',
             'action' => 'service:proxy',
             'data' => [
-                'service' => 'jira',
-                'query' => 'search?jql='.$this->config[static::URI]
+                'service' => [
+                    'name' => 'jira',
+                    'query' => 'search?jql='.$this->config[static::URI]
+                ]
             ]
         ];
     }

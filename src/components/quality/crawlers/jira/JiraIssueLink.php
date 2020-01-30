@@ -14,11 +14,13 @@ use extas\interfaces\quality\crawlers\jira\IJiraSearchJQL;
 class JiraIssueLink extends Item implements IJiraIssueLink
 {
     /**
+     * @param string $linkDirection
+     *
      * @return string
      */
-    public function getIssueKey(): string
+    public function getIssueKey(string $linkDirection = self::IS__OUTWARD): string
     {
-        $issue = $this->config[static::FIELD__ISSUE_LINKS_OUTWARD] ?? [];
+        $issue = $this->config[$linkDirection] ?? [];
 
         return $issue[IJiraSearchJQL::PARAM__ISSUE_KEY] ?? '';
     }
@@ -30,7 +32,7 @@ class JiraIssueLink extends Item implements IJiraIssueLink
     {
         $type = $this->getType();
 
-        return $type['name'] == static::TYPE__PARENT;
+        return ($type['name'] == static::TYPE__PARENT) && isset($this->config[static::IS__OUTWARD]);
     }
 
     /**
@@ -40,7 +42,7 @@ class JiraIssueLink extends Item implements IJiraIssueLink
     {
         $type = $this->getType();
 
-        return $type['name'] == static::TYPE__CHILD;
+        return ($type['name'] == static::TYPE__PARENT) && isset($this->config[static::IS__INWARD]);
     }
 
     /**

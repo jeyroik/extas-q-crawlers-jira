@@ -138,7 +138,7 @@ class CrawlerJira extends Crawler
             /**
              * @var $link IJiraIssueLink
              */
-            $issueKey = $link->getIssueKey();
+            $issueKey = $link->getIssueKey(IJiraIssueLink::IS__INWARD);
             if ($link->isChild() && isset($bvs[$issueKey])) {
                 $users = $ticket->getTimeSpentUserNames();
                 foreach ($users as $user) {
