@@ -72,6 +72,7 @@ class CrawlerJira extends Crawler
             $usersByNames[$user->getName()] = true;
             $user = $this->applyNewData($user, $assignees);
             $userRepo->update($user);
+            $output->writeln(['Update user <info>' . $user->getName() . '</info>']);
         }
 
         foreach ($assignees as $userName => $userData) {
@@ -82,6 +83,7 @@ class CrawlerJira extends Crawler
             $user = new User([User::FIELD__NAME => $userName]);
             $user = $this->applyNewData($user, $assignees);
             $userRepo->create($user);
+            $output->writeln(['Create user <info>' . $user->getName() . '</info>']);
         }
         return $this;
     }
