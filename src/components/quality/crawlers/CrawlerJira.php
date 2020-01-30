@@ -2,13 +2,11 @@
 namespace extas\components\quality\crawlers;
 
 use extas\components\quality\crawlers\jira\JiraClient;
-use extas\components\quality\indexes\Index;
 use extas\components\quality\users\User;
 use extas\components\SystemContainer;
 use extas\interfaces\quality\crawlers\ICrawler;
 use extas\interfaces\quality\crawlers\jira\IJiraIssue;
 use extas\interfaces\quality\crawlers\jira\IJiraIssueLink;
-use extas\interfaces\quality\indexes\IIndexRepository;
 use extas\interfaces\quality\users\IUser;
 use extas\interfaces\quality\users\IUserRepository;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -51,7 +49,7 @@ class CrawlerJira extends Crawler
                  * @var $ticket IJiraIssue
                  */
                 $output->writeln(['Operating ticket <info>' . $ticket->getKey() . '</info>']);
-                $this->ticketToAssignees($ticket, $assignees, $bvs);
+                $this->ticketToAssignees($ticket, $assignees, $bvs, $output);
                 $tickets++;
             }
             if (!$tickets) {
@@ -136,8 +134,9 @@ class CrawlerJira extends Crawler
      * @param IJiraIssue $ticket
      * @param array $assignees
      * @param array $bvs
+     * @param OutputInterface $output
      */
-    protected function ticketToAssignees(IJiraIssue $ticket, array &$assignees, array $bvs)
+    protected function ticketToAssignees(IJiraIssue $ticket, array &$assignees, array $bvs, OutputInterface $output)
     {
         if ($ticket->getStatus()->isDone()) {
             foreach ($ticket->getIssueLinks() as $link) {
@@ -172,6 +171,11 @@ class CrawlerJira extends Crawler
                     }
                 }
             }
+        } else {
+            $output->writeln([
+                '<comment>Ticket is not done yet</comment>',
+                '<comment>Current state is "' . $ticket->getStatus()->getCategoryName() . '"</comment>'
+            ]);
         }
     }
 }
