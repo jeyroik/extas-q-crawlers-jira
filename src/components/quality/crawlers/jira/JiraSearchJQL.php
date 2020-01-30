@@ -2,6 +2,7 @@
 namespace extas\components\quality\crawlers\jira;
 
 use extas\components\Item;
+use extas\interfaces\quality\crawlers\jira\IJiraIssue;
 use extas\interfaces\quality\crawlers\jira\IJiraSearchJQL;
 
 /**
@@ -109,6 +110,7 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
     {
         $fields[] = 'customfield_' . $this->getBVId();
         $fields[] = 'customfield_' . $this->getReturnsId();
+        $fields[] = IJiraIssue::FIELD__STATUS;
         $this->config[static::URI] .= '&' . static::PARAM__FIELDS . '=' . implode(',', $fields);
 
         return $this;
