@@ -30,12 +30,30 @@ class CrawlerJira extends Crawler
             $jiraClient = new JiraClient();
             $keys = [];
             $bvs = [];
+            $foundStories = 0;
             foreach ($jiraClient->allStories() as $story) {
+                /**
+                 * @var $story IJiraIssue
+                 */
+                $output->writeln(['Operating story <info>' . $story->getKey() . '</info>']);
                 $this->story2BVAndKeys($story, $bvs, $keys);
+                $foundStories++;
+            }
+            if (!$foundStories) {
+                $output->writeln(['<info>There are no applicable stories yet.</info>']);
             }
             $assignees = [];
+            $tickets = 0;
             foreach ($jiraClient->allTickets($keys) as $ticket) {
+                /**
+                 * @var $ticket IJiraIssue
+                 */
+                $output->writeln(['Operating ticket <info>' . $ticket->getKey() . '</info>']);
                 $this->ticketToAssignees($ticket, $assignees, $bvs);
+                $tickets++;
+            }
+            if (!$tickets) {
+                $output->writeln(['<info>There are no applicable tickets yet.</info>']);
             }
         } catch (\Exception $e) {
             $messages = explode('\n', $e->getMessage());
