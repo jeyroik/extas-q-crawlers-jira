@@ -139,33 +139,35 @@ class CrawlerJira extends Crawler
      */
     protected function ticketToAssignees(IJiraIssue $ticket, array &$assignees, array $bvs)
     {
-        foreach ($ticket->getIssueLinks() as $link) {
-            /**
-             * @var $link IJiraIssueLink
-             */
-            $issueKey = $link->getIssueKey(IJiraIssueLink::IS__INWARD);
-            if ($link->isChild() && isset($bvs[$issueKey])) {
-                $users = $ticket->getTimeSpentUserNames();
-                foreach ($users as $user) {
-                    if (!isset($assignees[$user])) {
-                        $assignees[$user] = [
-                            'sum' => 0,
-                            'time_spent' => 0,
-                            'bugs' => 0,
-                            'returns' => 0,
-                            'done' => 0,
-                            'index' => []
-                        ];
-                    }
-                    if (!isset($assignees[$user]['index'][$issueKey])) {
-                        $assignees[$user]['sum'] += $bvs[$issueKey];
-                        $assignees[$user]['time_spent'] += $ticket->getTimeSpent($user);
-                        $assignees[$user]['returns'] += $ticket->getReturnsCount();
-                        $assignees[$user]['done']++;
-                        $assignees[$user]['index'][$issueKey] = true;
+        if ($ticket->getStatus()->isDone()) {
+            foreach ($ticket->getIssueLinks() as $link) {
+                /**
+                 * @var $link IJiraIssueLink
+                 */
+                $issueKey = $link->getIssueKey(IJiraIssueLink::IS__INWARD);
+                if ($link->isChild() && isset($bvs[$issueKey])) {
+                    $users = $ticket->getTimeSpentUserNames();
+                    foreach ($users as $user) {
+                        if (!isset($assignees[$user])) {
+                            $assignees[$user] = [
+                                'sum' => 0,
+                                'time_spent' => 0,
+                                'bugs' => 0,
+                                'returns' => 0,
+                                'done' => 0,
+                                'index' => []
+                            ];
+                        }
+                        if (!isset($assignees[$user]['index'][$issueKey])) {
+                            $assignees[$user]['sum'] += $bvs[$issueKey];
+                            $assignees[$user]['time_spent'] += $ticket->getTimeSpent($user);
+                            $assignees[$user]['returns'] += $ticket->getReturnsCount();
+                            $assignees[$user]['done']++;
+                            $assignees[$user]['index'][$issueKey] = true;
 
-                        if ($ticket->isBug()) {
-                            $assignees[$user]['bugs']++;
+                            if ($ticket->isBug()) {
+                                $assignees[$user]['bugs']++;
+                            }
                         }
                     }
                 }
