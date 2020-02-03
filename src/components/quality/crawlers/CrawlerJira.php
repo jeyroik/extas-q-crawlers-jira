@@ -1,12 +1,15 @@
 <?php
 namespace extas\components\quality\crawlers;
 
+use extas\components\quality\crawlers\jira\indexes\JiraIssuesIndex;
 use extas\components\quality\crawlers\jira\JiraClient;
 use extas\components\quality\users\User;
 use extas\components\SystemContainer;
 use extas\interfaces\quality\crawlers\ICrawler;
 use extas\interfaces\quality\crawlers\jira\IJiraIssue;
 use extas\interfaces\quality\crawlers\jira\IJiraIssueLink;
+use extas\interfaces\quality\crawlers\jira\indexes\IJIraIssuesIndex;
+use extas\interfaces\quality\crawlers\jira\indexes\IJiraIssuesIndexRepository;
 use extas\interfaces\quality\users\IUser;
 use extas\interfaces\quality\users\IUserRepository;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,6 +22,23 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CrawlerJira extends Crawler
 {
+    /**
+     * @var IJIraIssuesIndex
+     */
+    protected $index = null;
+
+    /**
+     * CrawlerJira constructor.
+     *
+     * @param array $config
+     */
+    public function __construct(array $config = [])
+    {
+        parent::__construct($config);
+
+        $this->index = $this->getIndex();
+    }
+
     /**
      * @param OutputInterface $output
      *
@@ -61,6 +81,17 @@ class CrawlerJira extends Crawler
             return $this;
         }
 
+        $this->updateUsersInfo($assignees, $output);
+
+        return $this;
+    }
+
+    /**
+     * @param array $assignees
+     * @param OutputInterface $output
+     */
+    protected function updateUsersInfo(array $assignees, OutputInterface &$output)
+    {
         /**
          * @var $userRepo IUserRepository
          * @var $users IUser[]
@@ -85,7 +116,29 @@ class CrawlerJira extends Crawler
             $userRepo->create($user);
             $output->writeln(['Create user <info>' . $user->getName() . '</info>']);
         }
-        return $this;
+    }
+
+    /**
+     * @return IJIraIssuesIndex|null
+     */
+    protected function getIndex(): ?IJIraIssuesIndex
+    {
+        /**
+         * @var $repo IJiraIssuesIndexRepository
+         */
+        $repo = SystemContainer::getItem(IJiraIssuesIndexRepository::class);
+        $index = $repo->one([IJIraIssuesIndex::FIELD__MONTH => date('Ym')]);
+
+        if (!$index) {
+            $index = new JiraIssuesIndex([
+                JiraIssuesIndex::FIELD__MONTH => date('Ym'),
+                JiraIssuesIndex::FIELD__TIMESTAMP => time(),
+                JiraIssuesIndex::FIELD__ISSUES => []
+            ]);
+            $repo->create($index);
+        }
+
+        return $index;
     }
 
     /**
@@ -145,6 +198,15 @@ class CrawlerJira extends Crawler
                  */
                 $issueKey = $link->getIssueKey(IJiraIssueLink::IS__INWARD);
                 if ($link->isChild() && isset($bvs[$issueKey])) {
+                    if ($this->index->hasIssue($ticket->getKey())) {
+                        $output->writeln([
+                            '<comment>Ticket #' . $ticket->getKey() . ' is already operated.</comment>',
+                            '<comment>Skipped it.</comment>'
+                        ]);
+                        continue;
+                    } else {
+                        $this->index->addIssue($ticket);
+                    }
                     $users = $ticket->getTimeSpentUserNames();
                     foreach ($users as $user) {
                         if (!isset($assignees[$user])) {
