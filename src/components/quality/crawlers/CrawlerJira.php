@@ -81,6 +81,7 @@ class CrawlerJira extends Crawler
             return $this;
         }
 
+        $this->index->commit();
         $this->updateUsersInfo($assignees, $output);
 
         return $this;
