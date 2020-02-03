@@ -201,7 +201,7 @@ class CrawlerJira extends Crawler
                 if ($link->isChild() && isset($bvs[$issueKey])) {
                     if ($this->index->hasIssue($ticket->getKey())) {
                         $output->writeln([
-                            '<comment>Ticket #' . $ticket->getKey() . ' is already operated.</comment>',
+                            '<comment>Ticket ' . $ticket->getKey() . ' is already operated.</comment>',
                             '<comment>Skipped it.</comment>'
                         ]);
                         continue;
