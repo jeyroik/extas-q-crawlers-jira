@@ -24,6 +24,7 @@ class JiraIssuesIndex extends Item implements IJIraIssuesIndex
          * @var $repo IJiraIssuesIndexRepository
          */
         $repo = SystemContainer::getItem(IJiraIssuesIndexRepository::class);
+        $this->setTimestamp(time());
         $repo->update($this);
 
         return $this;
