@@ -13,7 +13,7 @@ use extas\interfaces\quality\crawlers\jira\indexes\IJiraIssuesIndexRepository;
 class JiraIssuesIndexRepository extends Repository implements IJiraIssuesIndexRepository
 {
     protected $itemClass = JiraIssuesIndex::class;
-    protected $name = 'issues_indexes';
+    protected $name = 'quality_jira_issues_indexes';
     protected $pk = JiraIssuesIndex::FIELD__MONTH;
     protected $scope = 'extas';
     protected $idAs = '';
