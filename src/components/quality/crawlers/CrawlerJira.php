@@ -56,7 +56,7 @@ class CrawlerJira extends Crawler
                  * @var $story IJiraIssue
                  */
                 $output->writeln(['Operating story <info>' . $story->getKey() . '</info>']);
-                $this->story2BVAndKeys($story, $bvs, $keys);
+                $this->story2BVAndKeys($story, $bvs, $keys, $output);
                 $foundStories++;
             }
             if (!$foundStories) {
@@ -170,8 +170,9 @@ class CrawlerJira extends Crawler
      * @param IJiraIssue $story
      * @param array $bvs
      * @param array $keys
+     * @param OutputInterface $output
      */
-    protected function story2BVAndKeys(IJiraIssue $story, array &$bvs, array &$keys)
+    protected function story2BVAndKeys(IJiraIssue $story, array &$bvs, array &$keys, OutputInterface $output)
     {
         $bvs[$story->getKey()] = $story->getBV();
         foreach ($story->getIssueLinks() as $link) {
@@ -179,6 +180,13 @@ class CrawlerJira extends Crawler
              * @var $link IJiraIssueLink
              */
             if ($link->isParent()) {
+                if ($this->index->hasIssue($link->getIssueKey())) {
+                    $output->writeln([
+                        '<comment>Child ticket ' . $link->getIssueKey() . ' is already operated.</comment>',
+                        '<comment>Skipped it.</comment>'
+                    ]);
+                    continue;
+                }
                 $keys[] = $link->getIssueKey();
             }
         }
@@ -199,15 +207,7 @@ class CrawlerJira extends Crawler
                  */
                 $issueKey = $link->getIssueKey(IJiraIssueLink::IS__INWARD);
                 if ($link->isChild() && isset($bvs[$issueKey])) {
-                    if ($this->index->hasIssue($ticket->getKey())) {
-                        $output->writeln([
-                            '<comment>Ticket ' . $ticket->getKey() . ' is already operated.</comment>',
-                            '<comment>Skipped it.</comment>'
-                        ]);
-                        continue;
-                    } else {
-                        $this->index->addIssue($ticket);
-                    }
+                    $this->index->addIssue($ticket);
                     $users = $ticket->getTimeSpentUserNames();
                     foreach ($users as $user) {
                         if (!isset($assignees[$user])) {
