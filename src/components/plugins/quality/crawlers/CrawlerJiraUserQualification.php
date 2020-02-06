@@ -1,6 +1,7 @@
 <?php
-namespace extas\components\quality\crawlers;
+namespace extas\components\plugins\quality\crawlers;
 
+use extas\components\quality\crawlers\Crawler;
 use extas\components\quality\crawlers\jira\indexes\JiraIssuesIndex;
 use extas\components\quality\crawlers\jira\JiraClient;
 use extas\components\quality\users\User;
@@ -12,20 +13,23 @@ use extas\interfaces\quality\crawlers\jira\indexes\IJIraIssuesIndex;
 use extas\interfaces\quality\crawlers\jira\indexes\IJiraIssuesIndexRepository;
 use extas\interfaces\quality\users\IUser;
 use extas\interfaces\quality\users\IUserRepository;
+
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class CrawlerJira
+ * Class CrawlerJiraUserQualification
  *
  * @package extas\components\quality\crawlers
  * @author jeyroik@gmail.com
  */
-class CrawlerJira extends Crawler
+class CrawlerJiraUserQualification extends Crawler
 {
     /**
      * @var IJIraIssuesIndex
      */
     protected $index = null;
+    protected $title = '[Jira] User qualification';
+    protected $description = 'Calculate user qualification index per month.';
 
     /**
      * CrawlerJira constructor.
@@ -44,7 +48,7 @@ class CrawlerJira extends Crawler
      *
      * @return ICrawler
      */
-    public function crawl(OutputInterface &$output): ICrawler
+    public function __invoke(OutputInterface &$output): ICrawler
     {
         try {
             $jiraClient = new JiraClient();
