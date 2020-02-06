@@ -3,6 +3,7 @@ namespace extas\components\quality\crawlers\jira;
 
 use extas\components\Item;
 use extas\interfaces\quality\crawlers\jira\IJiraIssue;
+use extas\interfaces\quality\crawlers\jira\IJiraIssueChangelog;
 use extas\interfaces\quality\crawlers\jira\IJiraIssueLink;
 use extas\interfaces\quality\crawlers\jira\IJiraIssueType;
 use extas\interfaces\quality\crawlers\jira\IJiraStatus;
@@ -17,6 +18,29 @@ class JiraIssue extends Item implements IJiraIssue
 {
     use TJiraBV;
     use TJiraReturns;
+
+    /**
+     * @param bool $asTimestamp
+     *
+     * @return false|int|string
+     */
+    public function getCreated(bool $asTimestamp = false)
+    {
+        $created = $this->config[static::FIELD__CREATED] ?? '';
+
+        return $asTimestamp ? strtotime($created) : $created;
+    }
+
+    /**
+     * @return IJiraIssueChangelog
+     */
+    public function getChangelog(): IJiraIssueChangelog
+    {
+        $fields = $this->getFields();
+        $chnagelog = $fields[static::FIELD__CHANGELOG] ?? [];
+
+        return new JiraIssueChangelog($chnagelog);
+    }
 
     /**
      * @return string

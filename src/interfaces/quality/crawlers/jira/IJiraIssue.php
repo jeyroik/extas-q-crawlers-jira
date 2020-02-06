@@ -20,6 +20,20 @@ interface IJiraIssue extends IItem
     const FIELD__ISSUE_TYPE = 'issuetype';
     const FIELD__ISSUE_LINKS = 'issuelinks';
     const FIELD__STATUS = 'status';
+    const FIELD__CREATED = 'created';
+    const FIELD__CHANGELOG = 'changelog';
+
+    /**
+     * @return IJiraIssueChangelog
+     */
+    public function getChangelog(): IJiraIssueChangelog;
+
+    /**
+     * @param bool $asTimestamp
+     *
+     * @return string|int
+     */
+    public function getCreated(bool $asTimestamp = false);
 
     /**
      * @return IJiraStatus
