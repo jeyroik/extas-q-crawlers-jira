@@ -15,6 +15,7 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
 {
     use TJiraBV;
     use TJiraReturns;
+    use TJiraConfiguration;
 
     protected $jqlStarted = false;
 
@@ -134,12 +135,8 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
      */
     public function build(): string
     {
-        /**
-         * like "/rest/api/latest/" or "/rest/api/2/"
-         */
-        $endpointVersion = getenv('EXTAS__Q_JIRA_ENDPOINT_VERSION') ?: '';
-
-        return $this->getEndpoint() . $endpointVersion . 'search?jql=' . $this->config[static::URI];
+        return $this->cfg()->getEndpoint() . $this->cfg()->getEndpointVersion() .
+            'search?jql=' . $this->config[static::URI];
     }
 
     /**
@@ -148,13 +145,10 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
      */
     public function buildJson(): array
     {
-        $token = getenv('EXTAS__Q_JIRA_WRAPPER_TOKEN') ?: '';
+        $token = $this->cfg()->getWrapperToken();
 
         if (!$token) {
-            throw new \Exception(
-                'Missed jira wrapper token.' . '\n' .
-                'Please, define <info>EXTAS__Q_JIRA_WRAPPER_TOKEN</info> env parameter.'
-            );
+            throw new \Exception('Missed jira wrapper token.');
         }
 
         return [
@@ -168,24 +162,6 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
                 ]
             ]
         ];
-    }
-
-    /**
-     * @return string
-     * @throws \Exception
-     */
-    public function getEndpoint(): string
-    {
-        $jiraEndpoint = getenv('EXTAS__Q_JIRA_ENDPOINT') ?: '';
-
-        if (!$jiraEndpoint) {
-            throw new \Exception(
-                'Missed jira endpoint.' . '\n' .
-                'Please, define <info>EXTAS__Q_JIRA_ENDPOINT</info> env parameter.'
-            );
-        }
-
-        return $jiraEndpoint;
     }
 
     /**

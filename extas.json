@@ -1,19 +1,11 @@
 {
   "name": "extas/quality-crawlers-jira",
-  "package_classes": [
+  "env": [
     {
-      "class": "extas\\components\\quality\\crawlers\\jira\\indexes\\JiraIssuesIndexRepository",
-      "interface": "extas\\interfaces\\quality\\crawlers\\jira\\indexes\\IJiraIssuesIndexRepository"
-    }
-  ],
-  "plugins": [
-    {
-      "class": "extas\\components\\plugins\\PluginInstallQualityCrawlerJiraIssuesIndex",
-      "stage": "extas.install"
-    },
-    {
-      "class": "extas\\components\\plugins\\quality\\crawlers\\CrawlerJiraUserQualification",
-      "stage": "extas.quality.crawl"
+      "title": "Quality. Jira config path",
+      "description": "Path to jira configuration file for the quality crawler.",
+      "name": "EXTAS__Q_JIRA_CONFIG_PATH",
+      "value": ""
     }
   ]
 }

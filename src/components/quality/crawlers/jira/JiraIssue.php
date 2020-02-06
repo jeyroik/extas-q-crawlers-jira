@@ -232,17 +232,14 @@ class JiraIssue extends Item implements IJiraIssue
 
     /**
      * @return bool
+     * @throws \Exception
      */
     public function isBug(): bool
     {
-        $bug = getenv('EXTAS__Q_JIRA_BUG') ?: 'Bug';
-        $bug = (strpos($bug, ',') !== false)
-            ? $bug = explode(',', $bug)
-            : $bug = [$bug];
+        $issueType = $this->getIssueType();
+        $bugTypes = JiraConfiguration::load()->getBugTypes();
 
-        $type = $this->getIssueType();
-
-        return in_array($type->getName(), $bug);
+        return isset($bugTypes[$issueType->getName()]);
     }
 
     /**

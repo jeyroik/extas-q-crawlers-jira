@@ -18,16 +18,16 @@ interface IJiraClient extends IItem
     const FIELD__HTTP_CLIENT = 'http_client';
 
     /**
-     * @return string
+     * @return string[]
      */
-    public function getProjectKey(): string;
+    public function getProjectKeys(): array;
 
     /**
-     * @param string $key
+     * @param string[] $keys
      *
      * @return IJiraClient
      */
-    public function setProjectKey(string $key): IJiraClient;
+    public function setProjectKeys(array $keys): IJiraClient;
 
     /**
      * @param array $returnFields

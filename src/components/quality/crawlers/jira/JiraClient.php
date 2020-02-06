@@ -16,6 +16,8 @@ use GuzzleHttp\ClientInterface;
  */
 class JiraClient extends Item implements IJiraClient
 {
+    use TJiraConfiguration;
+
     /**
      * JiraClient constructor.
      *
@@ -44,8 +46,8 @@ class JiraClient extends Item implements IJiraClient
             ->updatedDate(JQL::CONDITION__LOWER, JQL::DATE_FUNC__END_OF_MONTH, -1)
             ->returnFields($returnFields);
 
-        if ($projectKey = $this->getProjectKey()) {
-            $jql->projectKey([$projectKey]);
+        if ($projectKeys = $this->getProjectKeys()) {
+            $jql->projectKey($projectKeys);
         }
 
         $search = new JiraSearch($this->getResponse($jql));
@@ -77,8 +79,8 @@ class JiraClient extends Item implements IJiraClient
         $jql->issueKey($keys)
             ->returnFields($returnFields);
 
-        if ($projectKey = $this->getProjectKey()) {
-            $jql->projectKey([$projectKey]);
+        if ($projectKeys = $this->getProjectKeys()) {
+            $jql->projectKey($projectKeys);
         }
 
         $search = new JiraSearch($this->getResponse($jql));
@@ -97,21 +99,21 @@ class JiraClient extends Item implements IJiraClient
     }
 
     /**
-     * @return string
+     * @return string[]
      */
-    public function getProjectKey(): string
+    public function getProjectKeys(): array
     {
-        return $this->config[IJiraSearchJQL::PARAM__PROJECT_KEY] ?? '';
+        return $this->config[IJiraSearchJQL::PARAM__PROJECT_KEY] ?? [];
     }
 
     /**
-     * @param string $key
+     * @param string[] $keys
      *
      * @return IJiraClient
      */
-    public function setProjectKey(string $key): IJiraClient
+    public function setProjectKeys(array $keys): IJiraClient
     {
-        $this->config[IJiraSearchJQL::PARAM__PROJECT_KEY] = $key;
+        $this->config[IJiraSearchJQL::PARAM__PROJECT_KEY] = $keys;
 
         return $this;
     }
@@ -141,7 +143,8 @@ class JiraClient extends Item implements IJiraClient
      */
     protected function getResponse(IJiraSearchJQL $jql)
     {
-        $isWrapped = getenv('EXTAS__Q_JIRA_WRAPPED') ?: 0;
+        $config = $this->cfg();
+        $isWrapped = $config->getIsWrapped();
 
         if ($isWrapped) {
             return $this->getWrappedResponse($jql);
@@ -149,8 +152,8 @@ class JiraClient extends Item implements IJiraClient
             $client = $this->getHttClient();
             $response = $client->get($jql->build(), [
                 'auth' => [
-                    getenv('EXTAS__Q_JIRA_LOGIN') ?: '',
-                    getenv('EXTAS__Q_JIRA_PASSWORD') ?: ''
+                    $config->getLogin(),
+                    $config->getPassword()
                 ]
             ]);
 
@@ -170,7 +173,7 @@ class JiraClient extends Item implements IJiraClient
     {
         $client = $this->getHttClient();
         $response = $client->get(
-            $jql->getEndpoint(),
+            $this->cfg()->getEndpoint(),
             ['json' => $jql->buildJson()]
         );
 
