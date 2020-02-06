@@ -18,31 +18,11 @@ interface IJiraClient extends IItem
     const FIELD__HTTP_CLIENT = 'http_client';
 
     /**
-     * @return string[]
-     */
-    public function getProjectKeys(): array;
-
-    /**
-     * @param string[] $keys
-     *
-     * @return IJiraClient
-     */
-    public function setProjectKeys(array $keys): IJiraClient;
-
-    /**
-     * @param array $returnFields
+     * @param IJiraSearchJQL $jql
      *
      * @return \Generator
      */
-    public function allStories(array $returnFields = []);
-
-    /**
-     * @param array $keys
-     * @param array $returnFields
-     *
-     * @return \Generator
-     */
-    public function allTickets(array $keys, array $returnFields = []);
+    public function allTickets(IJiraSearchJQL $jql);
 
     /**
      * @return ClientInterface|Client

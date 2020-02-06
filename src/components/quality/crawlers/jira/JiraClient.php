@@ -3,7 +3,6 @@ namespace extas\components\quality\crawlers\jira;
 
 use extas\components\Item;
 use extas\interfaces\quality\crawlers\jira\IJiraClient;
-use extas\components\quality\crawlers\jira\JiraSearchJQL as JQL;
 use extas\interfaces\quality\crawlers\jira\IJiraSearchJQL;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -31,60 +30,16 @@ class JiraClient extends Item implements IJiraClient
     }
 
     /**
-     * @param array $returnFields
-     *
-     * @return array|\Generator
-     * @throws
-     */
-    public function allStories(array $returnFields = [])
-    {
-        $returnFields = $this->mergeReturnFields($returnFields, [JQL::PARAM__ISSUE_LINKS]);
-        $jql = new JQL();
-        $jql->issueType([JQL::ISSUE_TYPE__STORY])
-            ->issueLinkType([JQL::LINK_TYPE__PARENT])
-            ->bv(JQL::CONDITION__GREATER, 0)
-            ->updatedDate(JQL::CONDITION__LOWER, JQL::DATE_FUNC__END_OF_MONTH, -1)
-            ->returnFields($returnFields);
-
-        if ($projectKeys = $this->getProjectKeys()) {
-            $jql->projectKey($projectKeys);
-        }
-
-        $search = new JiraSearch($this->getResponse($jql));
-        $items = $search->hasItems() ? $search->getItems() : [];
-
-        foreach ($items as $item) {
-            yield $item;
-        }
-    }
-
-    /**
-     * @param array $keys
-     * @param array $returnFields
+     * @param IJiraSearchJQL $jql
      *
      * @return \Generator
      * @throws
      */
-    public function allTickets(array $keys, array $returnFields = [])
+    public function allTickets(IJiraSearchJQL $jql)
     {
-        $returnFieldsDefault = [
-            JQL::PARAM__ISSUE_LINKS,
-            JQL::PARAM__ASSIGNEE,
-            JQL::PARAM__WORK_LOG
-        ];
-
-        $returnFields = $this->mergeReturnFields($returnFields, $returnFieldsDefault);
-
-        $jql = new JQL();
-        $jql->issueKey($keys)
-            ->returnFields($returnFields);
-
-        if ($projectKeys = $this->getProjectKeys()) {
-            $jql->projectKey($projectKeys);
-        }
-
         $search = new JiraSearch($this->getResponse($jql));
         $items = $search->hasItems() ? $search->getItems() : [];
+
         foreach ($items as $item) {
             yield $item;
         }
@@ -96,43 +51,6 @@ class JiraClient extends Item implements IJiraClient
     public function getHttClient()
     {
         return $this->config[static::FIELD__HTTP_CLIENT] ?? null;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getProjectKeys(): array
-    {
-        return $this->config[IJiraSearchJQL::PARAM__PROJECT_KEY] ?? [];
-    }
-
-    /**
-     * @param string[] $keys
-     *
-     * @return IJiraClient
-     */
-    public function setProjectKeys(array $keys): IJiraClient
-    {
-        $this->config[IJiraSearchJQL::PARAM__PROJECT_KEY] = $keys;
-
-        return $this;
-    }
-
-    /**
-     * @param array $current
-     * @param array $default
-     *
-     * @return array
-     */
-    protected function mergeReturnFields(array $current, array $default): array
-    {
-        foreach ($default as $field) {
-            if (!in_array($field, $current)) {
-                $current[] = $field;
-            }
-        }
-
-        return $current;
     }
 
     /**

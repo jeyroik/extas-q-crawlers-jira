@@ -30,7 +30,7 @@ interface IJiraSearchJQL extends IItem
 
     const LINK_TYPE__PARENT = 'is Parent of';
 
-    const DATE_FUNC__END_OF_MONTH = 'endOfMonth';
+    const DATE__END_OF_MONTH = 'endOfMonth';
 
     const CONDITION__GREATER = '>';
     const CONDITION__LOWER = '<';
