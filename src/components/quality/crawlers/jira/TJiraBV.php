@@ -18,10 +18,7 @@ trait TJiraBV
         $bvFieldID = JiraConfiguration::load()->getBVFieldId();
 
         if (!$bvFieldID) {
-            throw new \Exception(
-                'Missed jira bv field id.' . '\n' .
-                'Please, define <info>EXTAS__Q_JIRA_BV_FIELD_ID</info> env parameter.'
-            );
+            throw new \Exception('Missed jira bv field id.');
         }
 
         return (int) $bvFieldID;

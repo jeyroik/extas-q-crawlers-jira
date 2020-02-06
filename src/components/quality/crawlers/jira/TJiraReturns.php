@@ -18,10 +18,7 @@ trait TJiraReturns
         $returnFieldID = JiraConfiguration::load()->getReturnFieldId();
 
         if (!$returnFieldID) {
-            throw new \Exception(
-                'Missed jira return field id.' . '\n' .
-                'Please, define <info>EXTAS__Q_JIRA_RETURN_FIELD_ID</info> env parameter.'
-            );
+            throw new \Exception('Missed jira return field id.');
         }
 
         return (int) $returnFieldID;
