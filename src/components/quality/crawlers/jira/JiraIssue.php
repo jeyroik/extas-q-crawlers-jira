@@ -36,10 +36,9 @@ class JiraIssue extends Item implements IJiraIssue
      */
     public function getChangelog(): IJiraIssueChangelog
     {
-        $fields = $this->getFields();
-        $chnagelog = $fields[static::FIELD__CHANGELOG] ?? [];
+        $changelog = $this->config[static::FIELD__CHANGELOG] ?? [];
 
-        return new JiraIssueChangelog($chnagelog);
+        return new JiraIssueChangelog($changelog);
     }
 
     /**

@@ -14,6 +14,9 @@ interface IJiraSearchJQL extends IItem
 {
     const SUBJECT = 'extas.quality.crawler.jira.jql';
 
+    const FIELD__EXPAND = 'expand';
+    const FIELD__URI = 'uri';
+
     const PARAM__ISSUE_TYPE = 'issuetype';
     const PARAM__ISSUE_LINK_TYPE = 'issuelinktype';
     const PARAM__ISSUE_KEY = 'key';
@@ -34,8 +37,6 @@ interface IJiraSearchJQL extends IItem
 
     const CONDITION__GREATER = '>';
     const CONDITION__LOWER = '<';
-
-    const URI = 'uri';
 
     /**
      * @param string $condition
@@ -88,6 +89,13 @@ interface IJiraSearchJQL extends IItem
      * @return IJiraSearchJQL
      */
     public function projectKey(array $keys): IJiraSearchJQL;
+
+    /**
+     * @param array $expands
+     *
+     * @return IJiraSearchJQL
+     */
+    public function expand(array $expands): IJiraSearchJQL;
 
     /**
      * @return string

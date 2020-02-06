@@ -124,7 +124,19 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
         $fields[] = 'customfield_' . $this->getBVId();
         $fields[] = 'customfield_' . $this->getReturnsId();
         $fields[] = IJiraIssue::FIELD__STATUS;
-        $this->config[static::URI] .= '&' . static::PARAM__FIELDS . '=' . implode(',', $fields);
+        $this->config[static::FIELD__URI] .= '&' . static::PARAM__FIELDS . '=' . implode(',', $fields);
+
+        return $this;
+    }
+
+    /**
+     * @param array $expands
+     *
+     * @return IJiraSearchJQL
+     */
+    public function expand(array $expands): IJiraSearchJQL
+    {
+        $this->config[static::FIELD__EXPAND] = $expands;
 
         return $this;
     }
@@ -135,8 +147,16 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
      */
     public function build(): string
     {
-        return $this->cfg()->getEndpoint() . $this->cfg()->getEndpointVersion() .
-            'search?jql=' . $this->config[static::URI];
+        $built = $this->cfg()->getEndpoint() . $this->cfg()->getEndpointVersion() .
+            'search?jql=' . $this->config[static::FIELD__URI];
+
+        $expand = $this->config[static::FIELD__EXPAND] ?? [];
+
+        if ($expand) {
+            $built .= '&expand=' . implode(',', $expand);
+        }
+
+        return $built;
     }
 
     /**
@@ -151,6 +171,13 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
             throw new \Exception('Missed jira wrapper token.');
         }
 
+        $built = 'search?jql='.$this->config[static::FIELD__URI];
+        $expand = $this->config[static::FIELD__EXPAND] ?? [];
+
+        if ($expand) {
+            $built .= '&expand=' . implode(',', $expand);
+        }
+
         return [
             'token' => $token,
             'version' => '1.0',
@@ -158,7 +185,7 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
             'data' => [
                 'service' => [
                     'name' => 'jira',
-                    'query' => 'search?jql='.$this->config[static::URI]
+                    'query' => $built
                 ]
             ]
         ];
@@ -172,12 +199,12 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
     protected function appendToUri(string $uriPath): IJiraSearchJQL
     {
         if ($this->jqlStarted) {
-            $this->config[static::URI] .= ' and ';
+            $this->config[static::FIELD__URI] .= ' and ';
         } else {
             $this->jqlStarted = true;
         }
 
-        $this->config[static::URI] .= $uriPath;
+        $this->config[static::FIELD__URI] .= $uriPath;
 
         return $this;
     }
@@ -188,7 +215,7 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
      */
     protected function initUri()
     {
-        $this->config[static::URI] = '';
+        $this->config[static::FIELD__URI] = '';
         return $this;
     }
 
