@@ -15,7 +15,7 @@ trait TJiraReturns
      */
     protected function getReturnsId(): int
     {
-        $returnFieldID = getenv('EXTAS__Q_JIRA_RETURN_FIELD_ID') ?: 0;
+        $returnFieldID = JiraConfiguration::load()->getReturnFieldId();
 
         if (!$returnFieldID) {
             throw new \Exception(

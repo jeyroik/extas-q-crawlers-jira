@@ -15,7 +15,7 @@ trait TJiraBV
      */
     protected function getBVId(): int
     {
-        $bvFieldID = getenv('EXTAS__Q_JIRA_BV_FIELD_ID') ?: 0;
+        $bvFieldID = JiraConfiguration::load()->getBVFieldId();
 
         if (!$bvFieldID) {
             throw new \Exception(

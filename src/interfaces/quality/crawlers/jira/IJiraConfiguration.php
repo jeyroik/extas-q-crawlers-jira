@@ -20,11 +20,23 @@ interface IJiraConfiguration extends IItem
     const FIELD__BUG_TYPES = 'bugs';
     const FIELD__ENDPOINT = 'endpoint';
     const FIELD__ENDPOINT_VERSION = 'endpoint_version';
+    const FIELD__BV_FIELD_ID = 'bv_id';
+    const FIELD__RETURNS_FIELD_ID = 'return_id';
 
     /**
      * @return IJiraConfiguration
      */
     public static function load(): IJiraConfiguration;
+
+    /**
+     * @return int
+     */
+    public function getReturnFieldId(): int;
+
+    /**
+     * @return int
+     */
+    public function getBVFieldId(): int;
 
     /**
      * @return bool

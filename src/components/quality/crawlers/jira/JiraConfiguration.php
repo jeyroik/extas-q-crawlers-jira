@@ -51,6 +51,19 @@ class JiraConfiguration extends Item implements IJiraConfiguration
         parent::__construct($config);
     }
 
+    public function getBVFieldId(): int
+    {
+        return (int) ($this->config[static::FIELD__BV_FIELD_ID] ?? 0);
+    }
+
+    /**
+     * @return int
+     */
+    public function getReturnFieldId(): int
+    {
+        return (int) ($this->config[static::FIELD__RETURNS_FIELD_ID] ?? 0);
+    }
+
     /**
      * @return array
      */

@@ -11,5 +11,7 @@ return [
         'Bug' => true
     ],
     I::FIELD__ENDPOINT => '',
-    I::FIELD__ENDPOINT_VERSION => '/rest/api/latest/'
+    I::FIELD__ENDPOINT_VERSION => '/rest/api/latest/',
+    I::FIELD__BV_FIELD_ID => 13307,
+    I::FIELD__RETURNS_FIELD_ID => 11700
 ];
