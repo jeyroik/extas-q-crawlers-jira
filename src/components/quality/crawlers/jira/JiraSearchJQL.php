@@ -77,6 +77,18 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
     }
 
     /**
+     * @param string[] $keys
+     *
+     * @return IJiraSearchJQL
+     */
+    public function projectKey(array $keys): IJiraSearchJQL
+    {
+        $this->appendToUri(static::PARAM__PROJECT_KEY . ' in ("' . implode('","', $keys) . '")');
+
+        return $this;
+    }
+
+    /**
      * @param string[] $types
      *
      * @return IJiraSearchJQL

@@ -23,6 +23,7 @@ interface IJiraSearchJQL extends IItem
     const PARAM__ISSUE_BV = '@bv';
     const PARAM__FIELDS = 'fields';
     const PARAM__UPDATED_DATE = 'updatedDate';
+    const PARAM__PROJECT_KEY = 'project';
 
     const ISSUE_TYPE__STORY = 'story';
     const ISSUE_TYPE__BUG = 'bug';
@@ -80,6 +81,13 @@ interface IJiraSearchJQL extends IItem
      * @return IJiraSearchJQL
      */
     public function issueKey(array $keys): IJiraSearchJQL;
+
+    /**
+     * @param array $keys
+     *
+     * @return IJiraSearchJQL
+     */
+    public function projectKey(array $keys): IJiraSearchJQL;
 
     /**
      * @return string

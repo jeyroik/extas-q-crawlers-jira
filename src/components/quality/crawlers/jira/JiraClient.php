@@ -29,19 +29,25 @@ class JiraClient extends Item implements IJiraClient
     }
 
     /**
+     * @param array $returnFields
+     *
      * @return array|\Generator
      * @throws
      */
-    public function allStories()
+    public function allStories(array $returnFields = [])
     {
+        $returnFields = $this->mergeReturnFields($returnFields, [JQL::PARAM__ISSUE_LINKS]);
         $jql = new JQL();
         $jql->issueType([JQL::ISSUE_TYPE__STORY])
             ->issueLinkType([JQL::LINK_TYPE__PARENT])
             ->bv(JQL::CONDITION__GREATER, 0)
             ->updatedDate(JQL::CONDITION__LOWER, JQL::DATE_FUNC__END_OF_MONTH, -1)
-            ->returnFields([
-                JQL::PARAM__ISSUE_LINKS
-            ]);
+            ->returnFields($returnFields);
+
+        if ($projectKey = $this->getProjectKey()) {
+            $jql->projectKey([$projectKey]);
+        }
+
         $search = new JiraSearch($this->getResponse($jql));
         $items = $search->hasItems() ? $search->getItems() : [];
 
@@ -52,19 +58,28 @@ class JiraClient extends Item implements IJiraClient
 
     /**
      * @param array $keys
+     * @param array $returnFields
      *
      * @return \Generator
      * @throws
      */
-    public function allTickets(array $keys)
+    public function allTickets(array $keys, array $returnFields = [])
     {
+        $returnFieldsDefault = [
+            JQL::PARAM__ISSUE_LINKS,
+            JQL::PARAM__ASSIGNEE,
+            JQL::PARAM__WORK_LOG
+        ];
+
+        $returnFields = $this->mergeReturnFields($returnFields, $returnFieldsDefault);
+
         $jql = new JQL();
         $jql->issueKey($keys)
-            ->returnFields([
-                JQL::PARAM__ISSUE_LINKS,
-                JQL::PARAM__ASSIGNEE,
-                JQL::PARAM__WORK_LOG
-            ]);
+            ->returnFields($returnFields);
+
+        if ($projectKey = $this->getProjectKey()) {
+            $jql->projectKey([$projectKey]);
+        }
 
         $search = new JiraSearch($this->getResponse($jql));
         $items = $search->hasItems() ? $search->getItems() : [];
@@ -79,6 +94,43 @@ class JiraClient extends Item implements IJiraClient
     public function getHttClient()
     {
         return $this->config[static::FIELD__HTTP_CLIENT] ?? null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProjectKey(): string
+    {
+        return $this->config[IJiraSearchJQL::PARAM__PROJECT_KEY] ?? '';
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return IJiraClient
+     */
+    public function setProjectKey(string $key): IJiraClient
+    {
+        $this->config[IJiraSearchJQL::PARAM__PROJECT_KEY] = $key;
+
+        return $this;
+    }
+
+    /**
+     * @param array $current
+     * @param array $default
+     *
+     * @return array
+     */
+    protected function mergeReturnFields(array $current, array $default): array
+    {
+        foreach ($default as $field) {
+            if (!in_array($field, $current)) {
+                $current[] = $field;
+            }
+        }
+
+        return $current;
     }
 
     /**
