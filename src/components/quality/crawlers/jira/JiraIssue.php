@@ -26,7 +26,8 @@ class JiraIssue extends Item implements IJiraIssue
      */
     public function getCreated(bool $asTimestamp = false)
     {
-        $created = $this->config[static::FIELD__CREATED] ?? '';
+        $fields = $this->getFields();
+        $created = $fields[static::FIELD__CREATED] ?? '';
 
         return $asTimestamp ? strtotime($created) : $created;
     }
