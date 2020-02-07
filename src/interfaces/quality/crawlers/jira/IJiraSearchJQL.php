@@ -2,7 +2,6 @@
 namespace extas\interfaces\quality\crawlers\jira;
 
 use extas\interfaces\IItem;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Interface IJiraSearchJQL
@@ -16,6 +15,7 @@ interface IJiraSearchJQL extends IItem
 
     const FIELD__EXPAND = 'expand';
     const FIELD__URI = 'uri';
+    const FIELD__LIMIT = 'maxResults';
 
     const PARAM__ISSUE_TYPE = 'issuetype';
     const PARAM__ISSUE_LINK_TYPE = 'issuelinktype';
@@ -38,6 +38,13 @@ interface IJiraSearchJQL extends IItem
 
     const CONDITION__GREATER = '>';
     const CONDITION__LOWER = '<';
+
+    /**
+     * @param int $limit
+     *
+     * @return IJiraSearchJQL
+     */
+    public function limit(int $limit): IJiraSearchJQL;
 
     /**
      * @param string $condition

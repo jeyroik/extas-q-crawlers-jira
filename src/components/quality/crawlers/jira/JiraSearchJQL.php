@@ -49,6 +49,18 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
     }
 
     /**
+     * @param int $limit
+     *
+     * @return IJiraSearchJQL
+     */
+    public function limit(int $limit): IJiraSearchJQL
+    {
+        $this->config[static::FIELD__LIMIT] = $limit;
+
+        return $this;
+    }
+
+    /**
      * @param string $condition
      * @param string $dateFunction
      * @param string $dateFunctionArgument
@@ -156,6 +168,12 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
             $built .= '&expand=' . implode(',', $expand);
         }
 
+        $limit = $this->config[static::FIELD__LIMIT] ?? 0;
+
+        if ($limit) {
+            $built .= '&' . static::FIELD__LIMIT . '=' . $limit;
+        }
+
         return $built;
     }
 
@@ -176,6 +194,12 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
 
         if ($expand) {
             $built .= '&expand=' . implode(',', $expand);
+        }
+
+        $limit = $this->config[static::FIELD__LIMIT] ?? 0;
+
+        if ($limit) {
+            $built .= '&' . static::FIELD__LIMIT . '=' . $limit;
         }
 
         return [
