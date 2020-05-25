@@ -11,33 +11,33 @@ use extas\interfaces\IItem;
  */
 interface IJiraSearchJQL extends IItem
 {
-    const SUBJECT = 'extas.quality.crawler.jira.jql';
+    public const SUBJECT = 'extas.quality.crawler.jira.jql';
 
-    const FIELD__EXPAND = 'expand';
-    const FIELD__URI = 'uri';
-    const FIELD__LIMIT = 'maxResults';
+    public const FIELD__EXPAND = 'expand';
+    public const FIELD__URI = 'uri';
+    public const FIELD__LIMIT = 'maxResults';
 
-    const PARAM__ISSUE_TYPE = 'issuetype';
-    const PARAM__ISSUE_LINK_TYPE = 'issuelinktype';
-    const PARAM__ISSUE_KEY = 'key';
-    const PARAM__ISSUE_LINKS = 'issuelinks';
-    const PARAM__ASSIGNEE = 'assignee';
-    const PARAM__WORK_LOG = 'worklog';
-    const PARAM__ISSUE_BV = '@bv';
-    const PARAM__FIELDS = 'fields';
-    const PARAM__UPDATED_DATE = 'updatedDate';
-    const PARAM__PROJECT_KEY = 'project';
+    public const PARAM__ISSUE_TYPE = 'issuetype';
+    public const PARAM__ISSUE_LINK_TYPE = 'issuelinktype';
+    public const PARAM__ISSUE_KEY = 'key';
+    public const PARAM__ISSUE_LINKS = 'issuelinks';
+    public const PARAM__ASSIGNEE = 'assignee';
+    public const PARAM__WORK_LOG = 'worklog';
+    public const PARAM__ISSUE_BV = '@bv';
+    public const PARAM__FIELDS = 'fields';
+    public const PARAM__UPDATED_DATE = 'updatedDate';
+    public const PARAM__PROJECT_KEY = 'project';
 
-    const ISSUE_TYPE__STORY = 'story';
-    const ISSUE_TYPE__BUG = 'bug';
+    public const ISSUE_TYPE__STORY = 'story';
+    public const ISSUE_TYPE__BUG = 'bug';
 
-    const LINK_TYPE__PARENT = 'is Parent of';
+    public const LINK_TYPE__PARENT = 'is Parent of';
 
-    const DATE__START_OF_MONTH = 'startOfMonth';
-    const DATE__END_OF_MONTH = 'endOfMonth';
+    public const DATE__START_OF_MONTH = 'startOfMonth';
+    public const DATE__END_OF_MONTH = 'endOfMonth';
 
-    const CONDITION__GREATER = '>';
-    const CONDITION__LOWER = '<';
+    public const CONDITION__GREATER = '>';
+    public const CONDITION__LOWER = '<';
 
     /**
      * @param int $limit

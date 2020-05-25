@@ -9,7 +9,7 @@ namespace extas\interfaces\quality\crawlers\jira;
  */
 interface IHasTimestamp
 {
-    const FIELD__TIMESTAMP = 'timestamp';
+    public const FIELD__TIMESTAMP = 'timestamp';
 
     /**
      * @return int

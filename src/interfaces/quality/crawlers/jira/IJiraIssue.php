@@ -11,17 +11,17 @@ use extas\interfaces\IItem;
  */
 interface IJiraIssue extends IItem
 {
-    const SUBJECT = 'extas.quality.crawler.jira.issue';
+    public const SUBJECT = 'extas.quality.crawler.jira.issue';
 
-    const FIELD__KEY = 'key';
-    const FIELD__FIELDS = 'fields';
-    const FIELD__ASSIGNEE = 'assignee';
-    const FIELD__WORK_LOG = 'worklog';
-    const FIELD__ISSUE_TYPE = 'issuetype';
-    const FIELD__ISSUE_LINKS = 'issuelinks';
-    const FIELD__STATUS = 'status';
-    const FIELD__CREATED = 'created';
-    const FIELD__CHANGELOG = 'changelog';
+    public const FIELD__KEY = 'key';
+    public const FIELD__FIELDS = 'fields';
+    public const FIELD__ASSIGNEE = 'assignee';
+    public const FIELD__WORK_LOG = 'worklog';
+    public const FIELD__ISSUE_TYPE = 'issuetype';
+    public const FIELD__ISSUE_LINKS = 'issuelinks';
+    public const FIELD__STATUS = 'status';
+    public const FIELD__CREATED = 'created';
+    public const FIELD__CHANGELOG = 'changelog';
 
     /**
      * @return IJiraIssueChangelog

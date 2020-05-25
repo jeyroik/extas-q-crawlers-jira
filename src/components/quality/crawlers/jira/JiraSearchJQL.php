@@ -17,7 +17,7 @@ class JiraSearchJQL extends Item implements IJiraSearchJQL
     use TJiraReturns;
     use TJiraConfiguration;
 
-    protected $jqlStarted = false;
+    protected bool $jqlStarted = false;
 
     /**
      * JiraSearchJQL constructor.

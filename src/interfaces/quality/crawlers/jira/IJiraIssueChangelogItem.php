@@ -11,11 +11,11 @@ use extas\interfaces\IItem;
  */
 interface IJiraIssueChangelogItem extends IItem
 {
-    const SUBJECT = 'extas.quality.crawler.jira.issue.changelog.item';
+    public const SUBJECT = 'extas.quality.crawler.jira.issue.changelog.item';
 
-    const FIELD__CREATED = 'created';
-    const FIELD__FROM = 'fromString';
-    const FIELD__TO = 'toString';
+    public const FIELD__CREATED = 'created';
+    public const FIELD__FROM = 'fromString';
+    public const FIELD__TO = 'toString';
 
     /**
      * @param bool $asTimestamp

@@ -11,11 +11,11 @@ use extas\interfaces\IItem;
  */
 interface IJiraIssueChangelog extends IItem
 {
-    const SUBJECT = 'extas.quality.crawler.jira.issue.changelog';
+    public const SUBJECT = 'extas.quality.crawler.jira.issue.changelog';
 
-    const FIELD__TOTAL = 'total';
-    const FIELD__HISTORY = 'histories';
-    const FIELD__ITEMS = 'items';
+    public const FIELD__TOTAL = 'total';
+    public const FIELD__HISTORY = 'histories';
+    public const FIELD__ITEMS = 'items';
 
     /**
      * @param string $from

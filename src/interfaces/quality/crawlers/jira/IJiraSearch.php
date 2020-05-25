@@ -11,10 +11,10 @@ use extas\interfaces\IItem;
  */
 interface IJiraSearch extends IItem
 {
-    const SUBJECT = 'extas.quality.crawler.jira.search';
+    public const SUBJECT = 'extas.quality.crawler.jira.search';
 
-    const FIELD__TOTAL = 'total';
-    const FIELD__ITEMS = 'issues';
+    public const FIELD__TOTAL = 'total';
+    public const FIELD__ITEMS = 'issues';
 
     /**
      * @return bool

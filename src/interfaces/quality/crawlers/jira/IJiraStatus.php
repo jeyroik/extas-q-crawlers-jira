@@ -14,14 +14,14 @@ use extas\interfaces\IItem;
  */
 interface IJiraStatus extends IItem, IHasName, IHasId, IHasDescription
 {
-    const SUBJECT = 'extas.quality.crawler.jira.status';
+    public const SUBJECT = 'extas.quality.crawler.jira.status';
 
-    const FIELD__CATEGORY = 'statusCategory';
+    public const FIELD__CATEGORY = 'statusCategory';
 
-    const CATEGORY__DONE = 'Done';
-    const CATEGORY__IN_PROGRESS = 'In progress';
-    const CATEGORY__TODO = 'To do';
-    const CATEGORY__REVIEW = 'Code Review';
+    public const CATEGORY__DONE = 'Done';
+    public const CATEGORY__IN_PROGRESS = 'In progress';
+    public const CATEGORY__TODO = 'To do';
+    public const CATEGORY__REVIEW = 'Code Review';
 
     /**
      * @return string

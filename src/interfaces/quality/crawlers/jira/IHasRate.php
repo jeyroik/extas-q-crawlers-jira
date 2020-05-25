@@ -9,7 +9,7 @@ namespace extas\interfaces\quality\crawlers\jira;
  */
 interface IHasRate
 {
-    const FIELD__RATE = 'rate';
+    public const FIELD__RATE = 'rate';
 
     /**
      * @return float

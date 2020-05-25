@@ -59,7 +59,7 @@ class JiraClient extends Item implements IJiraClient
      * @return array
      * @throws \Exception
      */
-    protected function getResponse(IJiraSearchJQL $jql)
+    protected function getResponse(IJiraSearchJQL $jql): array
     {
         $config = $this->cfg();
         $isWrapped = $config->getIsWrapped();
@@ -87,7 +87,7 @@ class JiraClient extends Item implements IJiraClient
      * @return array|mixed
      * @throws \Exception
      */
-    protected function getWrappedResponse(IJiraSearchJQL $jql)
+    protected function getWrappedResponse(IJiraSearchJQL $jql): array
     {
         $client = $this->getHttClient();
         $response = $client->get(

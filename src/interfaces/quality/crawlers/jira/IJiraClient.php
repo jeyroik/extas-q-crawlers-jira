@@ -13,9 +13,9 @@ use GuzzleHttp\ClientInterface;
  */
 interface IJiraClient extends IItem
 {
-    const SUBJECT = 'extas.quality.crawler.jira.client';
+    public const SUBJECT = 'extas.quality.crawler.jira.client';
 
-    const FIELD__HTTP_CLIENT = 'http_client';
+    public const FIELD__HTTP_CLIENT = 'http_client';
 
     /**
      * @param IJiraSearchJQL $jql

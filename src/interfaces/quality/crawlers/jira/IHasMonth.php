@@ -9,7 +9,7 @@ namespace extas\interfaces\quality\crawlers\jira;
  */
 interface IHasMonth
 {
-    const FIELD__MONTH = 'month';
+    public const FIELD__MONTH = 'month';
 
     /**
      * @return int

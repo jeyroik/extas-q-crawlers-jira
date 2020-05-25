@@ -15,7 +15,7 @@ class JiraConfiguration extends Item implements IJiraConfiguration
     /**
      * @var IJiraConfiguration
      */
-    protected static $instance = null;
+    protected static ?IJiraConfiguration $instance = null;
 
     /**
      * @return IJiraConfiguration

@@ -14,5 +14,5 @@ use extas\interfaces\IItem;
  */
 interface IJiraIssueType extends IItem, IHasName, IHasId, IHasDescription
 {
-    const SUBJECT = 'extas.quality.crawler.jira.issue.type';
+    public const SUBJECT = 'extas.quality.crawler.jira.issue.type';
 }
